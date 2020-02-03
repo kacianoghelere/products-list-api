@@ -1,0 +1,26 @@
+{
+  "development": {
+    "username": "root",
+    "password": "d0v4k11n",
+    "database": "products_list_dev",
+    "host": "127.0.0.1",
+    "dialect": "mysql",
+    "operatorsAliases": 1
+  },
+  "test": {
+    "username": "root",
+    "password": null,
+    "database": "products_list_test",
+    "host": "127.0.0.1",
+    "dialect": "mysql",
+    "operatorsAliases": 1
+  },
+  "production": {
+    "username": "root",
+    "password": null,
+    "database": "products_list_prod",
+    "host": "127.0.0.1",
+    "dialect": "postgresql",
+    "operatorsAliases": 1
+  }
+}
