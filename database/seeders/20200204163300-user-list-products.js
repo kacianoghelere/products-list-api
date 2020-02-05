@@ -12,9 +12,9 @@ module.exports = {
       return Math.floor(Math.random() * (max - min + 1) + min);
     }
 
-    const userListProducts = [...range(1, 100)].map((product_id) => ({
-      user_id: 1,
-      product_id,
+    const userListProducts = [...range(1, 100)].map((index) => ({
+      user_list_id: 1,
+      product_id: index,
       amount: random(1, 4)
     }))
 

@@ -1,8 +1,10 @@
+'use strict';
+
 const Sequelize = require('sequelize')
 
 module.exports = {
   up: (queryInterface, DataTypes) => {
-    return queryInterface.createTable('user', {
+    return queryInterface.createTable('users', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -23,8 +25,9 @@ module.exports = {
         type: DataTypes.STRING,
       },
       createdAt: {
+        type: Sequelize.DATE,
         allowNull: false,
-        type: Sequelize.DATE
+        defaultValue: new Date(),
       },
       updatedAt: {
         allowNull: true,
@@ -33,6 +36,6 @@ module.exports = {
     }, {})
   },
   down: (queryInterface) => {
-    return queryInterface.dropTable('user')
+    return queryInterface.dropTable('users')
   }
 }

@@ -1,9 +1,8 @@
-const { authenticateJWT } = require(`${__basedir}/app/middlewares`)
+const { Product } = require(`${__basedir}/app/models`)
+const controller = require('./controller')
 
-module.exports = (app) => {
-  const { Product } = require(`${__basedir}/app/models`)
-
-  app.get('/products', authenticateJWT, async (request, response) => {
+module.exports = controller((router) => {
+  router.get('/', async (request, response) => {
     const page = parseInt(request.query.page)
 
     const limit = 20
@@ -16,22 +15,20 @@ module.exports = (app) => {
 
     const products = await Product.findAll({ limit, offset })
 
-    response.json({
+    return response.json({
       page: page + 1,
       results: products,
       totalPages
     })
   })
 
-  app.post('/products/:id', authenticateJWT, (request, response) => {
-    const productId = parseInt(request.params.id)
-
-    return response.status(204).end()
+  router.post('/', (request, response) => {
+    return response.status(204).end() // CREATES A NEW PRODUCT
   })
 
-  app.delete('/products/:id', authenticateJWT, (request, response) => {
+  router.delete('/:id', (request, response) => {
     const productId = parseInt(request.params.id)
 
-    return response.status(204).end()
+    return response.status(204).end() // REMOVES A PRODUCT
   })
-}
+})

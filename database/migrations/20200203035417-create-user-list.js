@@ -1,5 +1,7 @@
 'use strict';
 
+const Sequelize = require('sequelize')
+
 module.exports = {
   up: (queryInterface, DataTypes) => {
     return queryInterface.createTable('user_lists', {
@@ -13,7 +15,7 @@ module.exports = {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
-          model: 'user',
+          model: 'users',
           key: 'id'
         },
         onDelete: 'cascade',
@@ -24,8 +26,9 @@ module.exports = {
         type: DataTypes.STRING,
       },
       createdAt: {
+        type: Sequelize.DATE,
         allowNull: false,
-        type: Sequelize.DATE
+        defaultValue: new Date(),
       },
       updatedAt: {
         allowNull: true,

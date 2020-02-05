@@ -1,7 +1,16 @@
 const jwt = require('jsonwebtoken')
 
+const uncheckedRoutes = [
+  '/sign-in',
+  '/sign-up'
+]
+
 module.exports = {
   authenticateJWT: (request, response, next) => {
+    if (uncheckedRoutes.indexOf(request.path) !== -1) {
+      return next()
+    }
+
     const authorizationHeader = request.headers.authorization
 
     if (authorizationHeader) {

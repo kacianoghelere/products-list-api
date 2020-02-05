@@ -9,11 +9,13 @@ module.exports = (sequelize, DataTypes) => {
     timestamps: true
   })
 
-  Product.belongsToMany(models.UserList, {
-    through: 'UserListProduct',
-    as: 'user_lists',
-    foreignKey: 'user_list_id'
-  })
+  Product.associate = (models) => {
+    Product.belongsToMany(models.UserList, {
+      through: 'UserListProduct',
+      as: 'user_lists',
+      foreignKey: 'user_list_id'
+    })
+  }
 
   return Product
 }

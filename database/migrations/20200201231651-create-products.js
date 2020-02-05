@@ -1,3 +1,7 @@
+'use strict';
+
+const Sequelize = require('sequelize')
+
 module.exports = {
   up: (queryInterface, DataTypes) => {
     return queryInterface.createTable('products', {
@@ -20,8 +24,9 @@ module.exports = {
         type: DataTypes.STRING
       },
       createdAt: {
+        type: Sequelize.DATE,
         allowNull: false,
-        type: Sequelize.DATE
+        defaultValue: new Date(),
       },
       updatedAt: {
         allowNull: true,
