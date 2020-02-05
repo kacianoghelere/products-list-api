@@ -9,11 +9,13 @@ function hashPassword(password) {
 module.exports = {
   up: (queryInterface) => queryInterface.bulkInsert('users', [
     {
+      id: 1,
       name: 'John Doe',
       email: 'kacianoghelere@gmail.com',
       password: hashPassword('123456')
     },
     {
+      id: 2,
       name: 'John Travolta',
       email: 'test1@test.com',
       password: hashPassword('123456')

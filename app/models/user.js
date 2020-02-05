@@ -1,5 +1,3 @@
-const { Product } = require(`${__basedir}/app/models`)
-
 module.exports = (sequelize, DataTypes) => {
   const bcrypt = require('bcrypt')
 
@@ -10,15 +8,14 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     paranoid: true,
     tableName: 'users',
-    timestamps: false
+    timestamps: true
   })
 
   User.associate = (models) => {
-    User.belongsToMany(models.Product, {
-      as: 'products',
-      through: 'UserProduct',
+    User.hasMany(models.UserList, {
+      sourceKey: 'id',
       foreignKey: 'user_id',
-      otherKey: 'product_id'
+      as: 'lists'
     })
   }
 

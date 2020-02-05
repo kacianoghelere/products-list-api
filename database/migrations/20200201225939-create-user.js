@@ -2,7 +2,7 @@ const Sequelize = require('sequelize')
 
 module.exports = {
   up: (queryInterface, DataTypes) => {
-    return queryInterface.createTable('users', {
+    return queryInterface.createTable('user', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -21,10 +21,18 @@ module.exports = {
       password: {
         allowNull: false,
         type: DataTypes.STRING,
+      },
+      createdAt: {
+        allowNull: false,
+        type: Sequelize.DATE
+      },
+      updatedAt: {
+        allowNull: true,
+        type: Sequelize.DATE
       }
     }, {})
   },
   down: (queryInterface) => {
-    return queryInterface.dropTable('users')
+    return queryInterface.dropTable('user')
   }
 }

@@ -6,7 +6,13 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     paranoid: true,
     tableName: 'products',
-    timestamps: false
+    timestamps: true
+  })
+
+  Product.belongsToMany(models.UserList, {
+    through: 'UserListProduct',
+    as: 'user_lists',
+    foreignKey: 'user_list_id'
   })
 
   return Product

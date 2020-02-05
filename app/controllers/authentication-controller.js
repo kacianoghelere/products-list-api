@@ -17,11 +17,15 @@ module.exports = (app) => {
       const user = await User.findOne({ where: { email } });
 
       if (! user) {
-        return response.status(404).send('Usuário não encontrado')
+        return response.status(404).json({
+          message: 'Usuário não encontrado'
+        })
       }
 
       if (! bcrypt.compareSync(password, user.password)) {
-        return response.status(401).send('Senha incorreta ' + password + ' == ' + user.password)
+        return response.status(401).json({
+          message: 'Senha incorreta'
+        })
       }
 
       const token = jwt.sign({

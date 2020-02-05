@@ -9,9 +9,11 @@ module.exports = {
 
       jwt.verify(token, process.env.JWT_SECRET_KEY, (error, user) => {
         if (error) {
-          console.error('authenticateJWT', error)
+          console.error('Authenticate JWT', error)
 
-          return response.status(401).send('O token de acesso recebido não é valido.')
+          return response.status(401).json({
+            message: 'O token de acesso recebido não é valido.'
+          })
         }
 
         request.user = user
@@ -19,7 +21,9 @@ module.exports = {
         next()
       })
     } else {
-      response.status(401).send('O cabeçalho Authorization não foi informado.')
+      response.status(401).json({
+        message: 'O cabeçalho Authorization não foi informado.'
+      })
     }
   }
 }

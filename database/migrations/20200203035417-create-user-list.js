@@ -1,23 +1,27 @@
+'use strict';
+
 module.exports = {
   up: (queryInterface, DataTypes) => {
-    return queryInterface.createTable('products', {
+    return queryInterface.createTable('user_lists', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: DataTypes.INTEGER
+        type: DataTypes.INTEGER,
       },
-      name: {
+      user_id: {
+        type: DataTypes.INTEGER,
         allowNull: false,
-        type: DataTypes.STRING
+        references: {
+          model: 'user',
+          key: 'id'
+        },
+        onDelete: 'cascade',
+        onUpdate: 'cascade'
       },
-      price: {
+      title: {
         allowNull: false,
-        type: DataTypes.DataTypes.DECIMAL(10,2)
-      },
-      image: {
-        allowNull: false,
-        type: DataTypes.STRING
+        type: DataTypes.STRING,
       },
       createdAt: {
         allowNull: false,
@@ -30,6 +34,6 @@ module.exports = {
     }, {})
   },
   down: (queryInterface) => {
-    return queryInterface.dropTable('products')
+    return queryInterface.dropTable('user_lists')
   }
 }
