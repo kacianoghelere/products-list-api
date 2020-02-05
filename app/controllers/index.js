@@ -16,6 +16,6 @@ module.exports = (app) => {
 
     let routerPath = path || file.replace(controllerSuffix, '')
 
-    app.use(`./${routerPath}`, router)
+    app.use(`/${routerPath}`, router)
   }
 }
