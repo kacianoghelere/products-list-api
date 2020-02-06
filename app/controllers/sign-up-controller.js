@@ -13,14 +13,10 @@ module.exports = controller((router) => {
 
       const hashedPassword = await bcrypt.hash(password, salt)
 
-      const allowedFields = ['name', 'email', 'password']
-
       const user = await User.create({
         name,
         email,
         password: hashedPassword
-      }, {
-        fields: allowedFields
       })
 
       const token = jwt.sign({
@@ -28,11 +24,11 @@ module.exports = controller((router) => {
         name: user.name
       }, process.env.JWT_SECRET_KEY)
 
-      response.json({ token })
+      return response.json({ token })
     } catch (error) {
       console.error(error)
 
-      return response.sendStatus(500)
+      return response.status(500).json({ message: error })
     }
   })
 })

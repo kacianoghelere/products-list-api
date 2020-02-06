@@ -1,4 +1,4 @@
-const { User } = require(`${__basedir}/app/models`)
+const { User, UserList } = require(`${__basedir}/app/models`)
 const controller = require('./controller')
 
 module.exports = controller((router) => {
@@ -21,9 +21,10 @@ module.exports = controller((router) => {
   })
 
   router.get('/:id/lists', async (request, response) => {
-    const user = await User.findByPk(request.params.id)
-
-    const userLists = await user.getLists()
+    const userLists = await UserList.findAll({
+      where: { user_id: request.params.id },
+      attributes: ['id', 'title', 'createdAt']
+    })
 
     return response.json(userLists)
   })

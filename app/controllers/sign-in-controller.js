@@ -32,7 +32,7 @@ module.exports = controller((router) => {
     } catch (error) {
       console.error(error)
 
-      return response.sendStatus(500)
+      return response.status(500).json({ message: error })
     }
   })
 })

@@ -2,7 +2,7 @@
 
 module.exports = (sequelize, DataTypes) => {
   const UserListProduct = sequelize.define('UserListProduct', {
-    user_id: DataTypes.INTEGER,
+    user_list_id: DataTypes.INTEGER,
     product_id: DataTypes.INTEGER,
     amount: DataTypes.INTEGER
   }, {
@@ -12,16 +12,20 @@ module.exports = (sequelize, DataTypes) => {
   })
 
   UserListProduct.associate = (models) => {
-    UserListProduct.belongsTo(models.User, {
-      foreignKey: 'user_id',
+    UserListProduct.belongsTo(models.UserList, {
+      foreignKey: 'user_list_id',
       targetKey: 'id',
-      as: 'user'
+      as: 'list',
+      onDelete: 'CASCADE',
+      onUpdate: 'NO ACTION'
     })
 
     UserListProduct.belongsTo(models.Product, {
       foreignKey: 'product_id',
       targetKey: 'id',
-      as: 'product'
+      as: 'product',
+      onDelete: 'NO ACTION',
+      onUpdate: 'NO ACTION'
     })
   }
 

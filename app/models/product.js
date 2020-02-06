@@ -13,7 +13,9 @@ module.exports = (sequelize, DataTypes) => {
     Product.belongsToMany(models.UserList, {
       through: 'UserListProduct',
       as: 'user_lists',
-      foreignKey: 'user_list_id'
+      foreignKey: 'user_list_id',
+      onDelete: 'CASCADE',
+      onUpdate: 'NO ACTION'
     })
   }
 

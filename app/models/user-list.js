@@ -14,6 +14,12 @@ module.exports = (sequelize, DataTypes) => {
       as: 'user'
     })
 
+    UserList.hasMany(models.UserListProduct, {
+      sourceKey: 'id',
+      foreignKey: 'user_list_id',
+      as: 'listProducts'
+    })
+
     UserList.belongsToMany(models.Product, {
       through: 'UserListProduct',
       as: 'products',

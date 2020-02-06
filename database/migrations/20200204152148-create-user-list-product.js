@@ -23,8 +23,8 @@ module.exports = {
           model: 'products',
           key: 'id'
         },
-        onDelete: 'cascade',
-        onUpdate: 'cascade',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION',
         unique: 'unique-product-user-list'
       },
       amount: {
