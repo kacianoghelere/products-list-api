@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken')
 const { User } = require(`${__basedir}/app/models`)
 const controller = require('./controller')
 
-module.exports = controller((router) => {
+module.exports = controller((router, ErrorHandler) => {
   router.post('/', async (request, response) => {
     try {
       const { email, password } = request.body
@@ -12,15 +12,11 @@ module.exports = controller((router) => {
       const user = await User.findOne({ where: { email } });
 
       if (! user) {
-        return response.status(404).json({
-          message: 'Usuário não encontrado'
-        })
+        ErrorHandler.notFound('Usuário não encontrado')
       }
 
       if (! bcrypt.compareSync(password, user.password)) {
-        return response.status(401).json({
-          message: 'Senha incorreta'
-        })
+        ErrorHandler.unauthorized('Senha incorreta')
       }
 
       const token = jwt.sign({
@@ -30,9 +26,7 @@ module.exports = controller((router) => {
 
       return response.json({ token })
     } catch (error) {
-      console.error(error)
-
-      return response.status(500).json({ message: error })
+      ErrorHandler.handle(error, response)
     }
   })
 })

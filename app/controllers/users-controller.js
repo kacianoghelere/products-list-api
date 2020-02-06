@@ -1,31 +1,31 @@
-const { User, UserList } = require(`${__basedir}/app/models`)
+const HttpStatus = require('http-status-codes')
+
 const controller = require('./controller')
 
-module.exports = controller((router) => {
+module.exports = controller((router, ErrorHandler, EntityService) => {
   router.get('/:id', async (request, response) => {
-    const user = await User.findByPk(request.params.id, {
-      attributes: ['id', 'name', 'email']
-    })
+    try {
+      const user = await EntityService.getUser(request.params.id, {
+        attributes: ['id', 'name', 'email']
+      })
 
-    return response.json(user) // RETURNS USER DATA
+      return response.json(user)
+    } catch (error) {
+      ErrorHandler.handle(error, response)
+    }
   })
 
   router.put('/:id', async (request, response) => {
-    const user = await User.findByPk(request.params.id)
+    try {
+      const user = await EntityService.getUser(request.params.id)
 
-    await user.update(request.body, {
-      fields: ['name', 'email', 'password']
-    })
+      await user.update(request.body, {
+        fields: ['name', 'email', 'password']
+      })
 
-    return response.sendStatus(204)
-  })
-
-  router.get('/:id/lists', async (request, response) => {
-    const userLists = await UserList.findAll({
-      where: { user_id: request.params.id },
-      attributes: ['id', 'title', 'createdAt']
-    })
-
-    return response.json(userLists)
+      return response.sendStatus(HttpStatus.NO_CONTENT)
+    } catch (error) {
+      ErrorHandler.handle(error, response)
+    }
   })
 })

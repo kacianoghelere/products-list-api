@@ -1,8 +1,44 @@
+const HttpStatus = require('http-status-codes')
+
 const { Product, UserList, UserListProduct } = require(`${__basedir}/app/models`)
 const { random } = require(`${__basedir}/app/utils`)
 const controller = require('./controller')
 
-module.exports = controller((router) => {
+module.exports = controller((router, ErrorHandler, EntityService) => {
+  router.get('/:user_id/lists', async (request, response) => {
+    try {
+      await EntityService.validateUser(request.params.user_id)
+
+      const userLists = await EntityService.getUserLists(request.params.user_id)
+
+      return response.json(userLists)
+    } catch (error) {
+      ErrorHandler.handle(error, response)
+    }
+  })
+
+  router.get('/my-lists', async (request, response) => {
+    try {
+      const userLists = await getUserLists(request.user.id)
+
+      return response.json(userLists)
+    } catch (error) {
+      ErrorHandler.handle(error, response)
+    }
+  })
+
+  router.get('/:id', async (request, response) => {
+    try {
+      const userList = await EntityService.getUserList(request.params.id, {
+        attributes: ['id', 'title', 'createdAt']
+      })
+
+      return response.json(userList)
+    } catch (error) {
+      ErrorHandler.handle(error, response)
+    }
+  })
+
   router.post('/', async (request, response) => {
     try {
       const products = await Product.findAll({ limit: 50 })
@@ -24,66 +60,31 @@ module.exports = controller((router) => {
 
       return response.json(userList)
     } catch (error) {
-      console.error(error)
-
-      return response.status(500).json({ message: error })
+      ErrorHandler.handle(error, response)
     }
   })
 
   router.put('/:id', async (request, response) => {
     try {
-      const userList = await UserList.findByPk(request.params.id)
+      const userList = await EntityService.getUserList(request.params.id)
 
-      await userList.update(request.body, {
-        fields: ['title']
-      })
+      await userList.update(request.body, { fields: ['title'] })
 
-      return response.sendStatus(204)
+      return response.sendStatus(HttpStatus.NO_CONTENT)
     } catch (error) {
-      console.error(error)
-
-      return response.status(500).json({ message: error })
+      ErrorHandler.handle(error, response)
     }
   })
 
   router.delete('/:id', async (request, response) => {
     try {
-      const userList = await UserList.findByPk(request.params.id)
+      const userList = await EntityService.getUserList(request.params.id)
 
       await userList.destroy()
 
-      return response.sendStatus(204)
+      return response.sendStatus(HttpStatus.NO_CONTENT)
     } catch (error) {
-      console.error(error)
-
-      return response.status(500).json({ message: error })
-    }
-  })
-
-  router.get('/:id/products', async (request, response) => {
-    try {
-      const rawResults = await UserListProduct.findAll({
-        where: {
-          user_list_id: request.params.id
-        },
-        attributes: ['amount'],
-        include: [{
-          model: Product,
-          as: 'product',
-          attributes: ['id', 'name', 'price', 'image']
-        }]
-      })
-
-      listProducts = rawResults.map(({ dataValues: { amount, product } }) => ({
-        ...product.dataValues,
-        amount
-      }))
-
-      return response.json(listProducts)
-    } catch (error) {
-      console.error(error)
-
-      return response.status(500).json({ message: error })
+      ErrorHandler.handle(error, response)
     }
   })
 })

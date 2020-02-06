@@ -4,11 +4,11 @@ const jwt = require('jsonwebtoken')
 const { User } = require(`${__basedir}/app/models`)
 const controller = require('./controller')
 
-module.exports = controller((router) => {
+module.exports = controller((router, ErrorHandler, EntityService) => {
   router.post('/', async (request, response) => {
-    try {
-      const { name, email, password } = request.body
+    const { name, email, password } = request.body
 
+    try {
       const salt = await bcrypt.genSalt(5)
 
       const hashedPassword = await bcrypt.hash(password, salt)
@@ -26,9 +26,13 @@ module.exports = controller((router) => {
 
       return response.json({ token })
     } catch (error) {
-      console.error(error)
+      if (error.name === 'SequelizeUniqueConstraintError') {
+        return response.status(HttpStatus.CONFLICT).json({
+          message: `O e-mail '${email}' já está sendo utilizado`
+        })
+      }
 
-      return response.status(500).json({ message: error })
+      ErrorHandler.handle(error, response)
     }
   })
 })

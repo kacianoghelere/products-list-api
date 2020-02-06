@@ -1,7 +1,9 @@
+
+
 const controller = require('./controller')
 
 module.exports = controller((router) => {
-  router.get('/', async (request, response) => {
+  router.get('/', (request, response) => {
     response.sendStatus(204)
   })
 })
