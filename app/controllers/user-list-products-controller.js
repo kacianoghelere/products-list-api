@@ -21,7 +21,7 @@ module.exports = controller((router, ErrorHandler, EntityService) => {
     try {
       const page = parseInt(request.query.page) || 0
 
-      const limit = 20
+      const limit = 1000
 
       const { count, rows } = await UserListProduct.findAndCountAll({
         where: { user_list_id },
