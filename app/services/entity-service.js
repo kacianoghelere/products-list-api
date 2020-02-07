@@ -13,8 +13,9 @@ module.exports = {
 
     return product
   },
-  getUserLists: (user_id) => {
+  getUserLists: (user_id, options = {}) => {
     return UserList.findAll({
+      ...options,
       where: { user_id },
       attributes: ['id', 'title', 'createdAt']
     })

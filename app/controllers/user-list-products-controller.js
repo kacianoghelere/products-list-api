@@ -16,13 +16,17 @@ const includeProduct = {
 
 module.exports = controller((router, ErrorHandler, EntityService) => {
   router.get('/:user_list_id', async (request, response) => {
+    const { user_list_id } = request.params
+
     try {
-      const { user_list_id } = request.params
+      const page = parseInt(request.query.page) || 0
 
-      await EntityService.getUserList(user_list_id)
+      const limit = 20
 
-      const listProducts = await UserListProduct.findAll({
+      const { count, rows } = await UserListProduct.findAndCountAll({
         where: { user_list_id },
+        limit,
+        offset: (page * limit),
         attributes: ['amount'],
         include: [{
           model: Product,
@@ -31,7 +35,11 @@ module.exports = controller((router, ErrorHandler, EntityService) => {
         }]
       })
 
-      return response.json(listProducts.map(formatListProduct))
+      return response.json({
+        currentPage: page + 1,
+        results: rows.map(formatListProduct),
+        totalPages: Math.ceil(count / limit)
+      })
     } catch (error) {
       ErrorHandler.handle(error, response)
     }

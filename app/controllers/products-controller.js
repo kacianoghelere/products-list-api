@@ -6,22 +6,18 @@ const controller = require('./controller')
 module.exports = controller((router, ErrorHandler, EntityService) => {
   router.get('/', async (request, response) => {
     try {
-      const page = parseInt(request.query.page)
+      const page = parseInt(request.query.page) || 0
 
       const limit = 20
 
       const offset = (page * limit)
 
-      const productsCount = await Product.count()
-
-      const totalPages = productsCount / limit
-
-      const products = await Product.findAll({ limit, offset })
+      const { count, rows } = await Product.findAndCountAll({ limit, offset })
 
       return response.json({
-        page: page + 1,
-        results: products,
-        totalPages
+        currentPage: page + 1,
+        results: rows,
+        totalPages: Math.ceil(count / limit)
       })
     } catch (error) {
       ErrorHandler.handle(error, response)
@@ -31,6 +27,21 @@ module.exports = controller((router, ErrorHandler, EntityService) => {
   router.get('/:product_id', async (request, response) => {
     try {
       const product = await EntityService.getProduct(request.params.product_id, {
+        attributes: ['id', 'name', 'price', 'image']
+      })
+
+      return response.json(product)
+    } catch (error) {
+      ErrorHandler.handle(error, response)
+    }
+  })
+
+  router.get('/search', async (request, response) => {
+    try {
+      const { name, priceStart, priceEnd } = request.query
+
+      const product = await Product.findAll({
+        where: { name },
         attributes: ['id', 'name', 'price', 'image']
       })
 

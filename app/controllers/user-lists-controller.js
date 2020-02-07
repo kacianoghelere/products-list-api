@@ -5,23 +5,23 @@ const { random } = require(`${__basedir}/app/utils`)
 const controller = require('./controller')
 
 module.exports = controller((router, ErrorHandler, EntityService) => {
-  router.get('/:user_id/lists', async (request, response) => {
-    try {
-      await EntityService.validateUser(request.params.user_id)
-
-      const userLists = await EntityService.getUserLists(request.params.user_id)
-
-      return response.json(userLists)
-    } catch (error) {
-      ErrorHandler.handle(error, response)
-    }
-  })
-
   router.get('/my-lists', async (request, response) => {
     try {
-      const userLists = await getUserLists(request.user.id)
+      const page = parseInt(request.query.page) || 0
 
-      return response.json(userLists)
+      const limit = 20
+
+      const { count, rows } = await UserList.findAndCountAll({
+        where: { user_id: request.user.id },
+        limit,
+        offset: (page * limit)
+      })
+
+      return response.json({
+        currentPage: page + 1,
+        results: rows,
+        totalPages: Math.ceil(count / limit)
+      })
     } catch (error) {
       ErrorHandler.handle(error, response)
     }
@@ -41,21 +41,22 @@ module.exports = controller((router, ErrorHandler, EntityService) => {
 
   router.post('/', async (request, response) => {
     try {
-      const products = await Product.findAll({ limit: 50 })
+      if (! request.body.title) {
+        ErrorHandler.badRequest('Você precisa informar um título para a sua lista')
+      }
 
       const userList = await UserList.create({
-        ...request.body,
+        title: request.body.title,
         user_id: request.user.id,
-        listProducts: products.map((product) => ({
+      })
+
+      const initialProducts = await Product.findAll({ limit: 50 })
+
+      initialProducts.forEach((product) => {
+        userList.createListProduct({
           product_id: product.id,
-          amount: random(1, 4)
-        }))
-      }, {
-        fields: ['title', 'user_id'],
-        include: [{
-          model: UserListProduct,
-          as: 'listProducts'
-        }]
+          amount: random(1, 3)
+        })
       })
 
       return response.json(userList)
@@ -66,9 +67,16 @@ module.exports = controller((router, ErrorHandler, EntityService) => {
 
   router.put('/:id', async (request, response) => {
     try {
+      if (! request.body.title) {
+        ErrorHandler.badRequest('Você precisa informar um título para a sua lista')
+      }
+
       const userList = await EntityService.getUserList(request.params.id)
 
-      await userList.update(request.body, { fields: ['title'] })
+      await userList.update({
+        title: request.body.title,
+        user_id: request.user.id,
+      })
 
       return response.sendStatus(HttpStatus.NO_CONTENT)
     } catch (error) {
