@@ -6,9 +6,9 @@ const controller = require('./controller')
 module.exports = controller((router, ErrorHandler, EntityService) => {
 
   router.get('/', async (request, response) => {
-    const { page = 0 } = request.query
-
     try {
+      const page = parseInt(request.query.page) || 0
+
       const limit = 100
 
       const offset = (page * limit)

@@ -65,9 +65,17 @@ module.exports = controller((router, ErrorHandler, EntityService) => {
     const { product_id, user_list_id } = request.params
 
     try {
-      await EntityService.getProduct(product_id)
+      const existentListProduct = await UserListProduct.findOne({
+        where: { user_list_id, product_id }
+      })
 
-      await EntityService.getUserList(user_list_id)
+      if (existentListProduct) {
+        await existentListProduct.update({
+          amount: existentListProduct.amount + 1
+        })
+
+        return response.json(existentListProduct)
+      }
 
       const listProduct = await UserListProduct.create({
         ...request.body,
@@ -77,7 +85,7 @@ module.exports = controller((router, ErrorHandler, EntityService) => {
         fields: ['user_list_id', 'product_id', 'amount']
       })
 
-      return response.json(formatListProduct(listProduct))
+      return response.json(listProduct)
     } catch (error) {
       if (error.name === 'SequelizeUniqueConstraintError') {
         return response.status(HttpStatus.CONFLICT).json({
