@@ -18,13 +18,13 @@ module.exports = controller((router, ErrorHandler, EntityService) => {
       })
 
       const userLists = await Promise.all(rows.map(async ({ dataValues }) => {
-        const listProductsCount = await UserListProduct.count({
+        const productsCount = await UserListProduct.count({
           where: { user_list_id: dataValues.id }
         })
 
         return {
           ...dataValues,
-          listProductsCount
+          productsCount
         }
       }))
 
