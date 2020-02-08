@@ -4,11 +4,12 @@ const { Product } = require(`${__basedir}/app/models`)
 const controller = require('./controller')
 
 module.exports = controller((router, ErrorHandler, EntityService) => {
-  router.get('/', async (request, response) => {
-    try {
-      const page = parseInt(request.query.page) || 0
 
-      const limit = 20
+  router.get('/', async (request, response) => {
+    const { page = 0 } = request.query
+
+    try {
+      const limit = 100
 
       const offset = (page * limit)
 

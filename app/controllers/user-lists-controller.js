@@ -17,9 +17,20 @@ module.exports = controller((router, ErrorHandler, EntityService) => {
         offset: (page * limit)
       })
 
+      const userLists = await Promise.all(rows.map(async ({ dataValues }) => {
+        const listProductsCount = await UserListProduct.count({
+          where: { user_list_id: dataValues.id }
+        })
+
+        return {
+          ...dataValues,
+          listProductsCount
+        }
+      }))
+
       return response.json({
         currentPage: page + 1,
-        results: rows,
+        results: userLists,
         totalPages: Math.ceil(count / limit)
       })
     } catch (error) {
