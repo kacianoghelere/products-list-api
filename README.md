@@ -1,4 +1,4 @@
-# [products-list-api](#)
+# [products-list-api](https://arcane-wave-46173.herokuapp.com/)
 
 Este projeto contém a API do projeto "Mercado Fácil", desenvolvido como parte desafio de desenvolvimento front-end da TodoCartões.
 
@@ -25,3 +25,4 @@ A estrutura faz uso de `models` para representar entidades de bancos de dados e 
 - Sequelize (ORM)
 
 ## Link do projeto no Heroku (pendente)
+[https://arcane-wave-46173.herokuapp.com/](https://arcane-wave-46173.herokuapp.com/)
